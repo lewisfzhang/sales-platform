@@ -1,22 +1,24 @@
 <?php
 	if(isset($_GET['id'])) {
-		$url = $_GET["id"];
-		$file_db = new PDO('sqlite:quotations.sqlite3');
+		$url = $_GET["id"]; //the student's unique hash
+		$file_db = new PDO('sqlite:quotations.sqlite3'); //the database
 		$file_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$find = "SELECT * FROM quotations WHERE url=:url";
+		$find = "SELECT * FROM quotations WHERE url=:url"; //query to find if the hash is in the database
 		$stmt = $file_db->prepare($find);
 		$stmt->bindParam(':url',$url, SQLITE3_TEXT);
 		$result = $stmt->execute();
 		$data = $stmt->fetchAll();
-		if($data) {
+		if($data) { //if there is a match w/ the same hash, execute the rest of the code
 ?>
 <html>
 <head>
 	<title>Bellarmine Senior Quotations</title>
+    <!--?-->
 	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script> 
 	<script>
+        //?
 		$(document).ready(function() {
 			$("#update").submit(function(event) {
 				$.post( "update.php", $( "#update" ).serialize(), function(msg) {
@@ -34,6 +36,7 @@
 			}
 			maxLength(document.getElementById("quotation"));
 		});
+        //updates character count
 		function countChar(val) {
 			var len = val.value.length;
 	        $('#charNum').text(100 - len);
@@ -62,30 +65,32 @@
 <body>
 	<div class="content">
 		<div>
-			<img src="Carillon-Logo.png" class="right"/>
+			<img src="Carillon-Logo.png" class="right" alt="logo"/>
 			<div class="left">
-				<h1>Hello <?php echo $data[0]["name"];?></h1>
-				<?php $quotation = trim($data[0]["quotation"]);if($quotation!='') { ?>
-				<p>Your quotation is:<br><div class="quote"><?php echo $quotation;?></div></p>
+				<h1>Hello <?php echo $data[0]["name"]; //writes in your name?></h1>
+				<?php $quotation = trim($data[0]["quotation"]);if($quotation!='') { /*Displays your current quotation if you've already entered one*/ ?>
+				<p>Your quotation is:</p><br><div class="quote"><?php echo $quotation;?></div><!--</p>-->
 				<?php } ?>
 			</div>
 		</div>
-		<div style="clear: both" />
+		<div style="clear: both"></div>
 		<?php
-			if($quotation=='') {
+			if($quotation=='') { 
 		?>
 		<div>Submit your quotation:</div>
 		<?php
 			}
 		?>
 		<?php
-			if($data[0]["processedTeacher"]!=2||$data[0]["processedStudent"]!=2) {
+            //I think that if the processed varaible = 2, then it was accepted?
+			if($data[0]["processedTeacher"]!=2||$data[0]["processedStudent"]!=2) { //if this is true, it was denied
 				if($quotation!='') {
 		?>
 			<div>Change your quotation:</div>
 		<?php
 		}
 		?>
+        <!--Simple form to get the user's qtd. and send it via POST to update.php to update the database-->
 		<form action="update.php" id="update">
 			<input type="hidden" name="id" value="<?php echo $url; ?>" />
 			<div class="form-group">

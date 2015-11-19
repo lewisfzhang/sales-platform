@@ -2,6 +2,7 @@
 	include 'users.php';
 	$user = $_SERVER['PHP_AUTH_USER'];
 	$pass = $_SERVER['PHP_AUTH_PW'];
+    //auth
 	$validated = ($user==$valid_user)&&($pass==$valid_password);
 	if($validated) {
 		$file_db = new PDO('sqlite:../quotations.sqlite3');
@@ -11,7 +12,9 @@
 		$result = $stmt->execute();
 		$data = $stmt->fetch();
 		if($data) {
-			echo json_encode($data);
+            //sends a JSON encoding of the data
+            //Idk why
+			echo json_encode($data); 
 		}
 		else {
 			echo "{}";

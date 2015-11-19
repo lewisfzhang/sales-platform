@@ -2,6 +2,7 @@
 	include 'users.php';
 	$user = $_SERVER['PHP_AUTH_USER'];
 	$pass = $_SERVER['PHP_AUTH_PW'];
+    //auth
 	$validated = ($user==$valid_user)&&($pass==$valid_password);
 	if($validated) {
 		$url = $_POST["id"];
@@ -10,11 +11,11 @@
 		$file_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$find = "";
 		if($pass==1) {
-			$find = "UPDATE quotations SET processedStudent=2 WHERE url=:url";
+			$find = "UPDATE quotations SET processedStudent=2 WHERE url=:url"; //update to reflect quotation being accepted
 			echo "1";
 		}
 		else {
-			$find = "UPDATE quotations SET processedStudent=1, processedTeacher=1 WHERE url=:url";
+			$find = "UPDATE quotations SET processedStudent=1, processedTeacher=1 WHERE url=:url"; //update to reflect not being accepted
 			echo "2";
 		}
 		$stmt = $file_db->prepare($find);
@@ -25,7 +26,8 @@
 		$stmt->bindParam(':url',$url, SQLITE3_TEXT);
 		$result = $stmt->execute();
 		$data = $stmt->fetch();
-		if($data["processedStudent"]==2&&$data["processedTeacher"]==2) {
+		if($data["processedStudent"]==2&&$data["processedTeacher"]==2) { //if the quotation is accepted
+            //sends and email to student saying they passed
 			$urls = 'http://www.antiamoebic.com/yearbook/seniors/admin/sendEmail.php';
 			$datas = array('id' => $url, 'pass' => '1', 'name' => $data["name"], 'email' => $data["email"], 'quotation' => $data["quotation"], 'reason' => '');
 			$options = array(
@@ -40,7 +42,8 @@
 			var_dump($result);
 
 		}
-		if($data["processedStudent"]==1||$data["processedTeacher"]==1) {
+		if($data["processedStudent"]==1||$data["processedTeacher"]==1) { //if it's denied
+            //send an email w/ the reason for denail etc. 
 			$reason = $_POST["reason"];
 			$urls = 'http://www.antiamoebic.com/yearbook/seniors/admin/sendEmail.php';
 			$datas = array('id' => $url, 'pass' => '0', 'name' => $data["name"], 'email' => $data["email"], 'quotation' => $data["quotation"], 'reason' => $reason);

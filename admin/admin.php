@@ -1,10 +1,12 @@
 <?php
-	include 'users.php';
+	include 'users.php'; //the file w/ username and password
 	$user = $_SERVER['PHP_AUTH_USER'];
 	$pass = $_SERVER['PHP_AUTH_PW'];
+    //authenticate
 	$validated = ($user==$valid_user)&&($pass==$valid_password);
-	if($validated) {
-		if(isset($_GET['id'])) {
+	if($validated) { 
+        //same as index.php
+		if(isset($_GET['id'])) { //still uses student's hash?
 			$url = $_GET["id"];
 			$file_db = new PDO('sqlite:../quotations.sqlite3');
 			$file_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -27,6 +29,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 	<script>
+        //?
 		$(document).ready(function() {
 			$("#update").submit(function(event) {
 				$.post( "adminChange.php", $( "#update" ).serialize(), function(msg) {
@@ -59,7 +62,7 @@
 <body>
 	<div class="content">
 		<div>
-			<img src="../Carillon-Logo.png" class="right"/>
+			<img src="../Carillon-Logo.png" class="right" alt="logo"/>
 			<div class="left">
 				<h1>Quotation: <?php echo $data[0]["name"];?></h1>
 				<?php $quotation = trim($data[0]["quotation"]);if($quotation!='') { ?>

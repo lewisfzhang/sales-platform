@@ -2,6 +2,7 @@
 	include 'users.php';
 	$user = $_SERVER['PHP_AUTH_USER'];
 	$pass = $_SERVER['PHP_AUTH_PW'];
+    //auth
 	$validated = ($user==$valid_user)&&($pass==$valid_password);
 	if($validated) {
 ?>
@@ -17,20 +18,21 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 	<script>
-		var currUrl = "";
+		var currUrl = ""; //current URL?
 		var content = [];
 		document.onkeydown = function(e) {
-			if(e.keyCode==38) {
-				$("#status").text("Updating");
-				$.post( "studentChange.php", {pass:1, id:currUrl}, function(msg) {
+			if(e.keyCode==38) { //on up arrow press and acceptance
+                //?
+				$("#status").text("Updating"); //set text to updating
+				$.post( "studentChange.php", {pass:1, id:currUrl}, function(msg) { //post some values to studentChange.php
 					$("#status").text("Updated");
 					update();
 				});
 			}
-			if(e.keyCode==40) {
+			if(e.keyCode==40) { //on down arrow press and rejection
 				$("#status").text("Updating");
 				var reason = prompt("Reason:");
-				$.post( "studentChange.php", {pass:0, id:currUrl, reason:encodeURIComponent(reason)}, function(msg) {
+				$.post( "studentChange.php", {pass:0, id:currUrl, reason:encodeURIComponent(reason)}, function(msg) { //post some values to studentChange.php
 					$("#status").text("Updated");
 					update();
 				});
@@ -39,11 +41,11 @@
 		function update() {
 			$.get( "studentProcess.php", function(msg) {
 				if(msg.trim()!="{}") {
-					content = $.parseJSON(msg);
+					content = $.parseJSON(msg); //parse the JSON from studentProcess
 					console.log(content);
 					index = 0;
 					currUrl = content["url"];
-					$("#requested").text(content["quotation"]);
+					$("#requested").text(content["quotation"]); //write out the quote
 					$("#name").text(content["name"]);
 				}
 				else {
