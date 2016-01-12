@@ -10,7 +10,7 @@
         while($row = $result->fetchArray(SQLITE3_ASSOC)){
             $firstName = $row['firstName']; 
         }
-        if($result){ //if the hash is found
+        if(($firstName != "") and isset($firstName)){ //if the hash is found
             echo "Hello $firstName"; //show name on page
 ?>
 

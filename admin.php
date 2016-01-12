@@ -11,7 +11,6 @@
             $name = $row['name']; 
         }
         if($result){ //if the hash is found
-            echo "Hello $name"; //show name on page
 ?>
 
 <!DOCTYPE html>
@@ -19,13 +18,21 @@
     <head>
         <meta charset="utf-8" />
         <title>Admin</title>
+        <script type="text/javascript">
+            function loginAdmin() {
+                document.getElementById("container").innerHTML = "<h1>Some HTML for the admin approval page</h1>" //insert new HTML
+            }
+        </script>
     </head>
     <body>
-        <form name="auth" method="post">
-            Email: <input type="text" name="email"> <br>
-            Password: <input type="text" name="password"> <br>
-            <input type="submit" name="submit">
-        </form>
+        <div id="container">
+            <p>Hello <?php echo  "$name" //show name?> </p>
+            <form name="auth" method="post">
+                Email: <input type="text" name="email"> <br>
+                Password: <input type="text" name="password"> <br>
+                <input type="submit" name="submit">
+            </form>
+        </div>
         <?php
             $email = $_POST['email']; //get email
             $password = $_POST['password']; //get password entered
@@ -43,15 +50,19 @@
                 $statement = $db -> prepare('SELECT password FROM admin WHERE url = :url;'); 
                 $statement -> bindValue(':url', $url);
                 $result = $statement->execute();
-                //set name to the name
+                //set name
                 while($row = $result->fetchArray(SQLITE3_ASSOC)){
                     $dbPassword = $row['password']; 
                 }
-                if($email == $dbEmail and $hashPass = $dbPassword){ //if passwords match
-                    echo "Yay!";
+                if($email == $dbEmail and $hashPass == $dbPassword){ //if passwords match
+        ?>
+        <script type="text/javascript">
+            loginAdmin(); //call function to change page once admin logs in successfully
+        </script>
+        <?php          
                 }
-                else{
-                    echo ":-(";
+                else{ //if passwords don't match
+                    echo "Email or password incorrect, please try again.";
                 }
             }
         ?>
@@ -61,7 +72,7 @@
 <?php 	} else{ //if the hash is not found
 			echo "404" ;
         }
-    } else {  //if ther is no unique hash at the end
+    } else {  //if there is no unique hash at the end
         echo "404";
     }
 ?>
