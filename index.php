@@ -34,7 +34,12 @@
                     var newQuotation = quotation.substring(0, 100); //take 1st 100 characters
                     document.getElementById("quotationEntry").value = newQuotation; //stop after first 100 character
                 }
-                return length; 
+                return length;
+            }
+            function trimmer() { //trims text in textarea
+                var text = document.getElementById("quotationEntry").value;
+                var trimmedText = text.trim();
+                document.getElementById("quotationEntry").value = trimmedText; 
             }
         </script>
     </head>
@@ -51,11 +56,14 @@
         $quotation = $row['quotation']; 
     }
     $quotation = trim($quotation); //trim whitespace
-    if(isset($quotation)){ //if quotation isn't null
+    if(isset($quotation) and $quotation != ""){ //if quotation isn't null
         echo "$quotation"; //put quotation in text area 
     }
 ?>
             </textarea>
+            <script>
+                trimmer();
+            </script>
             <p id="charCount">Character Count: /100</p>
             <p>Be sure to cite your source!</p>
             <input type="submit" name="submitQuote">
