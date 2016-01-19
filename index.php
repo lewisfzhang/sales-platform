@@ -11,7 +11,6 @@
             $firstName = $row['firstName']; 
         }
         if(($firstName != "") and isset($firstName)){ //if the hash is found
-            echo "Hello $firstName"; //show name on page
 ?>
 
 <!DOCTYPE html>
@@ -42,9 +41,13 @@
                 document.getElementById("quotationEntry").value = trimmedText; 
             }
         </script>
+        <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css"> <!--W3.CSS stylesheet-->
     </head>
     <body>
-        <form method="post"> <!--Form with submit button-->
+        <header class="w3-container w3-blue">
+            <h1>Please enter you quotation, <?php echo "$firstName"?></h1>
+        </header>
+        <form class="w3-container w3-card" method="post" style="margin-top: 20px;"> <!--Form with submit button-->
             <textarea id="quotationEntry" name="quotationEntry" onkeydown="charCount()" rows="3" cols="50">
 <?php
     //get the student's quotations
@@ -66,7 +69,7 @@
             </script>
             <p id="charCount">Character Count: /100</p>
             <p>Be sure to cite your source!</p>
-            <input type="submit" name="submitQuote">
+            <input type="submit" name="submitQuote" class="w3-btn">
         </form>
         <?php
             $newQuotation = $_POST['quotationEntry']; //get new quotation

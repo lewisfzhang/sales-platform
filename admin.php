@@ -23,15 +23,32 @@
                 document.getElementById("container").innerHTML = "" //delete login form
             }
         </script>
+        <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css"> <!--W3.CSS stylesheet-->
     </head>
     <body>
         <div id="container">
-            <p>Hello <?php echo  "$name" //show name?> </p>
-            <form name="auth" method="post">
-                Email: <input type="text" name="email"> <br>
-                Password: <input type="password" name="password"> <br>
-                <input type="submit" name="submit">
-            </form>
+            <!--W3.CSS Login page example template-->
+            <header class="w3-container w3-blue">
+                <h1>Please Login</h1>
+            </header>
+
+            <div class="w3-container w3-half w3-margin-top">
+                <form class="w3-container w3-card-4" name="auth" method="post">
+                  <h2 class="w3-text-theme">Login</h2>
+                  <div class="w3-group">      
+                    <input class="w3-input" type="text" name="email" required>
+                    <label class="w3-label">Email</label>
+                  </div>
+                  <div class="w3-group">      
+                    <input class="w3-input" type="password" name="password" required>
+                    <label class="w3-label">Password</label>
+                  </div>
+                  <br><br>
+                  <input type="submit" name="submit" value="Log in" class="w3-btn w3-theme">
+                  <br><br>
+                </form>
+                <!--End W3.CSS Login page example template-->
+            </div>
         </div>
         <?php
             $email = $_POST['email']; //get email
@@ -73,11 +90,17 @@
         </script>
         <!--HTML if admin logs in succussfully-->
         <div id="container2">
-            <!--Log out button-->
-            <form name="logout" action="logOut.php" method="post">
-                <input type="hidden" name="URL" value=<?php echo "\"$url\""; //send the url?>>
-                <input type="submit" name="logOutSubmit" value="Log Out"> 
-            </form>
+            <header class="w3-container w3-blue" style="padding-top: 10px;">
+                <!--Log out button-->
+                <form name="logout" action="logOut.php" method="post" style="float: left; padding-right: 20px;">
+                    <input type="hidden" name="URL" value=<?php echo "\"$url\""; //send the url?>>
+                    <input type="submit" name="logOutSubmit" value="Log Out" class="w3-btn"> 
+                </form> 
+                <!--Title-->
+                <h1 style="float: left; margin-top: -15px;">Senior Quotations</h1>
+                <!--Name-->
+                <h1 style="float: right; margin-top: -15px;"><?php echo "Signed in as: $name"?></h1>
+            </header>
             <!--
             Form that for all of the quotation approvals
             Must go to a separate handler because radio button might not be clicked but form still has to be handled
@@ -117,16 +140,19 @@
                     }
                 }*/
                 //show HTML ones that aren't null or ""
-                $i = 0; //number of quotations displayed 
+                $i = 0; //number of quotations to be displayed 
                 foreach($allQuotations as $eachQuotation){
                     if(($eachQuotation != "") and ($eachQuotation != "Array")){ //if not "" of "Array"
                         //get name of person with quoation
                         $statement5 = $db -> prepare('SELECT * FROM quotations WHERE quotation = :eachQuotation;'); 
                         $statement5 -> bindValue(':eachQuotation', $eachQuotation);
                         $result5 = $statement5->execute();
-                        //set name to the name
+                        //set name
                         while($row = $result5->fetchArray(SQLITE3_ASSOC)){
                             $studentFirstName = $row['firstName']; 
+                        } 
+                        while($row = $result5->fetchArray(SQLITE3_ASSOC)){
+                            $studentLastName = $row['lastName']; 
                         } 
                         //set url
                         while($row = $result5->fetchArray(SQLITE3_ASSOC)){
@@ -147,11 +173,26 @@
                             //name of the radio button fields
                             //it is incremented so that each quotation has it's own set of radio buttons
                             $radioName = "radioSet$i"; 
-            ?>
-                <?php 
-                    echo "Quotation: \"$eachQuotation\" Name: $studentFirstName ";
-                ?>
-                Approve: <input type="radio" name=<?php echo "\"$radioName\"";?> value="Approve" <?php
+            ?> 
+                <!--Show quotation in half of the browser-->
+                <div class="w3-card w3-half" style="padding-top: 40px;">
+                <header class="w3-container w3-teal">
+                    <h3>Quotation</h3>
+                </header>
+                <div class="w3-container">
+                     <?php 
+                        echo "\"$eachQuotation\"";
+                     ?>
+                </div>
+                </div>
+                <!--Show Name and action in other half-->
+                <div class="w3-card w3-half" style="padding-top: 40px;">
+                <header class="w3-container w3-teal">
+                    <h3><?php echo "$studentFirstName $studentLastName";?></h3>
+                </header>
+                <div class="w3-container">
+                    <!--Form stuff-->
+                    Approve: <input type="radio" name=<?php echo "\"$radioName\"";?> value="1" <?php
                        if(($isStudentAdmin == 1) and ($isProcessedStudent == 1)){ //if admin is a student and the quotation had been previously approved by a student admin
                             echo "checked"; //check this radio button
                        }
@@ -159,7 +200,7 @@
                             echo "checked"; //check this radio button
                        }
                    ?>>
-                Disapprove: <input type="radio" name=<?php echo "\"$radioName\"";?> value="Disapprove" <?php
+                Disapprove: <input type="radio" name=<?php echo "\"$radioName\"";?> value="-1" <?php
                        if(($isStudentAdmin == 1) and (($isProcessedStudent == -1) or ($isProcessedStudent == -2))){ //if admin is a student and the quotation had been previously disapproved by a student admin
                             echo "checked"; //check this radio button
                        }
@@ -167,8 +208,11 @@
                             echo "checked"; //check this radio button
                        }
                    ?>>
-                Clear: <input type="radio" name=<?php echo "\"$radioName\"";?> value="Clear">
+                Clear: <input type="radio" name=<?php echo "\"$radioName\"";?> value="0">
                 <input type="hidden" name=<?php echo "\"studentURL$i\""?> value=<?php echo "\"$studentURL\"";?>> <!--Sends the URL of the student whose quotation is being looked at-->
+                <input type="hidden" name=<?php echo "\"isStudentAdmin$i\""?> value=<?php echo "\"$isStudentAdmin\""?>> <!--Send whether or not it's a student admin-->
+                </div>
+                </div>
                 <br>
             <?php
                         }
@@ -176,7 +220,8 @@
                     }
                 }
             ?>
-                <input type="submit" name="submit2">
+                <input type="hidden" name=<?php echo "\"adminURL\""?> value=<?php echo "\"$url\""?>> <!--Send admin url to log out-->
+                <input type="submit" name="submit2" class="w3-btn" style="margin-top: 40px; margin-left: 20px;">
             </form> 
         </div>
         <?php
