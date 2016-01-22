@@ -24,6 +24,55 @@
             }
         </script>
         <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css"> <!--W3.CSS stylesheet-->
+        <!--<link rel="stylesheet" href="adminStyle.css">--> <!--For radio buttons, from: http://stackoverflow.com/questions/16242980/making-radio-buttons-look-like-buttons-instead-->
+        <style>
+            /*
+                From: http://stackoverflow.com/questions/16242980/making-radio-buttons-look-like-buttons-instead
+                */
+            .radioButtons {
+                 list-style-type:none;
+                 margin:25px 0 0 0;
+                 padding:0;
+            }
+
+            .radioButtons li {
+                 float:left;
+                 margin:0 5px 0 0;
+                width:100px;
+                height:40px;
+                position:relative;
+            }
+
+            .radioButtons label, .radioButtons input {
+                display:block;
+                position:absolute;
+                top:0;
+                left:0;
+                right:0;
+                bottom:0;
+            }
+
+            .radioButtons input[type="radio"] {
+                opacity:0.01;
+                z-index:100;
+            }
+
+            .radioButtons input[type="radio"]:checked + label,
+            .Checked + label {
+                background:#39B7CD;
+            }
+
+            .radioButtons label {
+                 padding:5px;
+                 border:1px solid #CCC; 
+                 cursor:pointer;
+                z-index:90;
+            }
+
+            .radioButtons label:hover {
+                 background:#DDD;
+            }
+        </style>
     </head>
     <body>
         <div id="container">
@@ -39,10 +88,10 @@
                     <input class="w3-input" type="text" name="email" required>
                     <label class="w3-label">Email</label>
                   </div>
-                  <div class="w3-group">      
+                  <!--<div class="w3-group">      
                     <input class="w3-input" type="password" name="password" required>
                     <label class="w3-label">Password</label>
-                  </div>
+                  </div>-->
                   <br><br>
                   <input type="submit" name="submit" value="Log in" class="w3-btn w3-theme">
                   <br><br>
@@ -52,17 +101,17 @@
         </div>
         <?php
             $email = $_POST['email']; //get email
-            $password = $_POST['password']; //get password entered
-            $hashPass = sha1($password); //hash of the password
-            if(isset($_POST['email']) and isset($_POST['password'])){ //if admin entered email and password
+            /*$password = $_POST['password']; //get password entered
+            $hashPass = sha1($password); //hash of the password*/
+            if(isset($_POST['email']) and $email != "" /*and isset($_POST['password'])*/){ //if admin entered email
                 //get the true email from the database
                 while($row = $result->fetchArray(SQLITE3_ASSOC)){
                     $dbEmail = $row['email']; 
                 }
-                //get the hashed password from the database
+                /*//get the hashed password from the database
                 while($row = $result->fetchArray(SQLITE3_ASSOC)){
                     $dbPassword = $row['password']; 
-                }
+                }*/
                 //get whether or not anyone else is logged in 
                 $statement2 = $db -> prepare('SELECT * FROM admin'); 
                 $result2 = $statement2->execute();
@@ -74,9 +123,16 @@
                 /*foreach($isLoggedIn as $key){
                     echo $key;
                 }*/
-                if($email == $dbEmail and $hashPass == $dbPassword){ //if passwords match
+                if($email == $dbEmail /*and $hashPass == $dbPassword*/){ //if emails match
                     if(sizeof(array_keys($isLoggedIn, 1)) > 0){ //if someone is logged in
-                        echo "Someone else is logged in, please wait for them to finish.";
+                        //get name of person logged in
+                        $statement0 = $db -> prepare('SELECT name FROM admin WHERE isLoggedIn = 1;'); 
+                        $result0 = $statement0->execute();
+                        //set name to the name
+                        while($row = $result0->fetchArray(SQLITE3_ASSOC)){
+                            $loggedInName = $row['name']; 
+                        }
+                        echo "$loggedInName is logged in right now, please wait a moment.";
                     }
                     else{ //if someone is not logged in already
                         //put that you are logged in in the db
@@ -169,51 +225,69 @@
                         while($row = $result->fetchArray(SQLITE3_ASSOC)){
                             $isStudentAdmin = $row['isStudent']; 
                         } 
-                        if($i != 0){ //takes out the first quotation, which is always "Array"
+                        if(($i != 0) and !(($isProcessedStudent == -1) or ($isProcessedStudent == -2) or ($isProcessedTeacher == -1) or ($isProcessedTeacher == -2))){ 
+                            //takes out the first quotation, which is always "Array"
+                            //also takes out quotations which have been disapproved already
+
                             //name of the radio button fields
                             //it is incremented so that each quotation has it's own set of radio buttons
-                            $radioName = "radioSet$i"; 
+                            $radioName = "radioSet$i";
+                            $radioId = "radioId$i"; 
             ?> 
                 <!--Show quotation in half of the browser-->
-                <div class="w3-card w3-half" style="padding-top: 40px;">
+                <div class="w3-card" style="padding-top: 40px;">
                 <header class="w3-container w3-teal">
-                    <h3>Quotation</h3>
+                    <h3><?php echo "$studentFirstName $studentLastName's"?> Quotation</h3>
                 </header>
                 <div class="w3-container">
                      <?php 
                         echo "\"$eachQuotation\"";
                      ?>
+                    <br>
+                    <!--Radio button appearance from: http://stackoverflow.com/questions/16242980/making-radio-buttons-look-like-buttons-instead-->
+                    <div class="w3-container">
+                        <ul class="radioButtons">
+                        <!--Form stuff-->
+                            <li>
+                        <!--Approve:--> <input type="radio" id=<?php echo "\"approve$radioId\""?> name=<?php echo "\"$radioName\"";?> value="1" <?php
+                           if(($isStudentAdmin == 1) and ($isProcessedStudent == 1)){ //if admin is a student and the quotation had been previously approved by a student admin
+                                echo "checked"; //check this radio button
+                           }
+                           elseif(($isStudentAdmin == 0) and ($isProcessedTeacher == 1)){ //if admin is a teacher and the quotation had been previously approved by a teacher admin
+                                echo "checked"; //check this radio button
+                           }
+                       ?>>
+                                <label for=<?php echo "\"approve$radioId\""?>>Approve</label>
+                            </li>
+                            <li>
+                    <!--Disapprove:--> <input type="radio" id=<?php echo "\"disapprove$radioId\""?> name=<?php echo "\"$radioName\"";?> value="-1" <?php
+                           /*if(($isStudentAdmin == 1) and (($isProcessedStudent == -1) or ($isProcessedStudent == -2))){ //if admin is a student and the quotation had been previously disapproved by a student admin
+                                echo "checked"; //check this radio button
+                           }
+                           elseif((($isProcessedTeacher == -1) or ($isProcessedTeacher == -2))){ //if admin is a teacher and the quotation had been previously disapproved by a teacher admin
+                                echo "checked"; //check this radio button
+                           }*/
+                       ?>>
+                                <label for=<?php echo "\"disapprove$radioId\""?>>Disapprove</label>
+                            </li>
+                            <li>
+                    <!--Clear:--> <input type="radio" id=<?php echo "\"clear$radioId\""?> name=<?php echo "\"$radioName\"";?> value="0">
+                                <label for="<?php echo "clear$radioId"?>">Clear</label>
+                            </li>
+                        </ul>
+                        <input type="hidden" name=<?php echo "\"studentURL$i\""?> value=<?php echo "\"$studentURL\"";?>> <!--Sends the URL of the student whose quotation is being looked at-->
+                        <input type="hidden" name=<?php echo "\"isStudentAdmin$i\""?> value=<?php echo "\"$isStudentAdmin\""?>> <!--Send whether or not it's a student admin-->
+                    </div>
                 </div>
                 </div>
                 <!--Show Name and action in other half-->
-                <div class="w3-card w3-half" style="padding-top: 40px;">
+                <!--<div class="w3-card w3-half" style="padding-top: 40px;">
                 <header class="w3-container w3-teal">
                     <h3><?php echo "$studentFirstName $studentLastName";?></h3>
                 </header>
-                <div class="w3-container">
-                    <!--Form stuff-->
-                    Approve: <input type="radio" name=<?php echo "\"$radioName\"";?> value="1" <?php
-                       if(($isStudentAdmin == 1) and ($isProcessedStudent == 1)){ //if admin is a student and the quotation had been previously approved by a student admin
-                            echo "checked"; //check this radio button
-                       }
-                       elseif(($isStudentAdmin == 0) and ($isProcessedTeacher == 1)){ //if admin is a teacher and the quotation had been previously approved by a teacher admin
-                            echo "checked"; //check this radio button
-                       }
-                   ?>>
-                Disapprove: <input type="radio" name=<?php echo "\"$radioName\"";?> value="-1" <?php
-                       if(($isStudentAdmin == 1) and (($isProcessedStudent == -1) or ($isProcessedStudent == -2))){ //if admin is a student and the quotation had been previously disapproved by a student admin
-                            echo "checked"; //check this radio button
-                       }
-                       elseif((($isProcessedTeacher == -1) or ($isProcessedTeacher == -2))){ //if admin is a teacher and the quotation had been previously disapproved by a teacher admin
-                            echo "checked"; //check this radio button
-                       }
-                   ?>>
-                Clear: <input type="radio" name=<?php echo "\"$radioName\"";?> value="0">
-                <input type="hidden" name=<?php echo "\"studentURL$i\""?> value=<?php echo "\"$studentURL\"";?>> <!--Sends the URL of the student whose quotation is being looked at-->
-                <input type="hidden" name=<?php echo "\"isStudentAdmin$i\""?> value=<?php echo "\"$isStudentAdmin\""?>> <!--Send whether or not it's a student admin-->
+                    
                 </div>
-                </div>
-                <br>
+                <br>-->
             <?php
                         }
                         $i = $i + 1; //number
