@@ -22,6 +22,11 @@
             function loginAdmin() {
                 document.getElementById("container").innerHTML = "" //delete login form
             }
+            function logOutAsk() {
+                //event.returnValue = "Be sure you logged off.";
+                //event.preventDefault(); 
+                return "Be sure you logged off.";
+            }
         </script>
         <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css"> <!--W3.CSS stylesheet-->
         <!--<link rel="stylesheet" href="adminStyle.css">--> <!--For radio buttons, from: http://stackoverflow.com/questions/16242980/making-radio-buttons-look-like-buttons-instead-->
@@ -74,7 +79,7 @@
             }
         </style>
     </head>
-    <body>
+    <body onbeforeunload="return logOutAsk()">
         <div id="container">
             <!--W3.CSS Login page example template-->
             <header class="w3-container w3-blue">
@@ -150,7 +155,7 @@
                 <!--Log out button-->
                 <form name="logout" action="logOut.php" method="post" style="float: left; padding-right: 20px;">
                     <input type="hidden" name="URL" value=<?php echo "\"$url\""; //send the url?>>
-                    <input type="submit" name="logOutSubmit" value="Log Out" class="w3-btn"> 
+                    <input type="submit" name="logOutSubmit" value="Log Out" class="w3-btn">
                 </form> 
                 <!--Title-->
                 <h1 style="float: left; margin-top: -15px;">Senior Quotations</h1>
@@ -225,9 +230,9 @@
                         while($row = $result->fetchArray(SQLITE3_ASSOC)){
                             $isStudentAdmin = $row['isStudent']; 
                         } 
-                        if(($i != 0) and !(($isProcessedStudent == -1) or ($isProcessedStudent == -2) or ($isProcessedTeacher == -1) or ($isProcessedTeacher == -2))){ 
+                        if(($i != 0) and !(($isProcessedStudent == -1) or ($isProcessedStudent == -2) or ($isProcessedTeacher == -1) or ($isProcessedTeacher == -2)) and !(($isProcessedStudent == 1) and ($isProcessedTeacher == 1))){ 
                             //takes out the first quotation, which is always "Array"
-                            //also takes out quotations which have been disapproved already
+                            //also takes out quotations which have been disapproved already or have been approved already
 
                             //name of the radio button fields
                             //it is incremented so that each quotation has it's own set of radio buttons
@@ -275,6 +280,7 @@
                                 <label for="<?php echo "clear$radioId"?>">Clear</label>
                             </li>
                         </ul>
+                        <textarea name=<?echo "\"disapprovalReason$i\""?> placeholder="Disapproval Reason" rows="1" cols="40"></textarea>
                         <input type="hidden" name=<?php echo "\"studentURL$i\""?> value=<?php echo "\"$studentURL\"";?>> <!--Sends the URL of the student whose quotation is being looked at-->
                         <input type="hidden" name=<?php echo "\"isStudentAdmin$i\""?> value=<?php echo "\"$isStudentAdmin\""?>> <!--Send whether or not it's a student admin-->
                     </div>
@@ -295,7 +301,7 @@
                 }
             ?>
                 <input type="hidden" name=<?php echo "\"adminURL\""?> value=<?php echo "\"$url\""?>> <!--Send admin url to log out-->
-                <input type="submit" name="submit2" class="w3-btn" style="margin-top: 40px; margin-left: 20px;">
+                <input type="submit" name="submit2" class="w3-btn" style="margin-top: 40px; margin-left: 20px;" >
             </form> 
         </div>
         <?php

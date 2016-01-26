@@ -6,15 +6,30 @@
         $studentURL = $_POST["studentURL$num"]; //get the specific url for each quotation
         $isStudentAdmin = $_POST["isStudentAdmin$num"]; //get whether it was a student admin 
         $radioState = $_POST["radioSet$num"]; //whether the quotation was approved, disapproved, or cleared
-        //put that you are logged in in the db
-        if($isStudentAdmin == 1){
-            $statement = $db -> prepare('UPDATE quotations SET processedStudent = :radioState WHERE url = :studentURL');
+        $disapprovalReason = $_POST["disapprovalReason$num"];
+        if($radioState == -1){ //if quotation is disapproved
+            //put that you are logged in in the db
+            if($isStudentAdmin == 1){
+                $statement = $db -> prepare('UPDATE quotations SET processedStudent = :radioState, disapprovalReason = :disapprovalReason WHERE url = :studentURL');
+            }
+            else {
+                $statement = $db -> prepare('UPDATE quotations SET processedTeacher = :radioState, disapprovalReason = :disapprovalReason WHERE url = :studentURL');
+            }
+            $statement -> bindValue(':radioState', $radioState);
+            $statement -> bindValue(':studentURL', $studentURL);
+            $statement -> bindValue(':disapprovalReason', $disapprovalReason);
         }
-        else {
-            $statement = $db -> prepare('UPDATE quotations SET processedTeacher = :radioState WHERE url = :studentURL');
+        else{
+            //put that you are logged in in the db
+            if($isStudentAdmin == 1){
+                $statement = $db -> prepare('UPDATE quotations SET processedStudent = :radioState WHERE url = :studentURL');
+            }
+            else {
+                $statement = $db -> prepare('UPDATE quotations SET processedTeacher = :radioState WHERE url = :studentURL');
+            }
+            $statement -> bindValue(':radioState', $radioState);
+            $statement -> bindValue(':studentURL', $studentURL);
         }
-        $statement -> bindValue(':radioState', $radioState);
-        $statement -> bindValue(':studentURL', $studentURL);
         $statement->execute();
     }
     //log out

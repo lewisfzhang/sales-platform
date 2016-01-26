@@ -36,8 +36,8 @@
 	}*/
 ​
 	//Set initial mail headers
-	$mail->From = "kevin.gottlieb19@bcp.org";
-	$mail->FromName = "Kevin Gottlieb";
+	$mail->From = "carillon@bcp.org";
+	$mail->FromName = "The Carillon";
 	$mail->AddBCC('clubmailer@bcp.org');
 	$mail->Subject = $subject;
 	$mail->Body = $body;

@@ -40,7 +40,7 @@
                     document.getElementById("charCount").innerHTML = "Character Count: " + length + "/100"; //put out character count
                 }
                 else { //if student went over limit
-                    document.getElementById("charCount").innerHTML = "Character Count: " + "100+/100"; //say that student has gone over limit
+                    document.getElementById("charCount").innerHTML = "Character Count: " + "100/100"; //say that student has gone over limit
                     var quotation = document.getElementById("quotationEntry").value;
                     var newQuotation = quotation.substring(0, 100); //take 1st 100 characters
                     document.getElementById("quotationEntry").value = newQuotation; //stop after first 100 character
@@ -61,10 +61,10 @@
             //then allow student to enter quotation
         ?>
         <header class="w3-container w3-blue">
-            <h1>Please enter you quotation, <?php echo "$firstName"?></h1>
+            <h1>Please enter your quotation, <?php echo "$firstName"?></h1>
         </header>
         <form class="w3-container w3-card" method="post" style="margin-top: 20px;"> <!--Form with submit button-->
-            <textarea id="quotationEntry" name="quotationEntry" onkeydown="charCount()" rows="3" cols="50">
+            <textarea id="quotationEntry" name="quotationEntry" onchange="charCount()" onkeyup="charCount()" onkeydown="charCount()" onblur="charCount()" onfocus="charCount()" rows="3" cols="50">
 <?php
     //get the student's quotations
     /*$statement = $db -> prepare('SELECT quotation FROM quotations WHERE url = :url;'); 
@@ -95,7 +95,8 @@
                 'UPDATE quotations
                 SET quotation = :newQuotation, 
                 processedStudent = 0, 
-                processedTeacher = 0
+                processedTeacher = 0,
+                disapprovalReason = NULL
                 WHERE url = :url;'); 
                 $statement -> bindValue(':url', $url);
                 $statement -> bindValue(':newQuotation', $newQuotation);
