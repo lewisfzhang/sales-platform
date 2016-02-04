@@ -7,14 +7,6 @@
 	$mail->Host = 'localhost';
 	$mail->Port = 25;
     ​
-	//MYSQL connection
-	$servername = 'localhost';
-	$username = 'clubs_u3er';
-	$password = 'tCpw6uTKZj3faqPT';
-	$dbname = 'clubs';
-	/*$con=mysqli_connect($servername, $username, $password, $dbname);
-	if (mysqli_connect_errno()) { exit('Failed to connect to MySQL database: ' . mysqli_connect_error()); }*/
-​
 	//Get data from form
 	$subject = "Test from Carillon";
 	//$body = htmlspecialchars($_POST['message'])
@@ -35,4 +27,5 @@
 		} else {
 			echo 'All messages have been sent.';
 		}​
+
 ?>
