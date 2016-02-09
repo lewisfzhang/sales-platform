@@ -1,10 +1,24 @@
 <?php
+    require('PHPMailer/PHPMailerAutoload.php'); //PHPMailer file
     $db = new SQLite3('quotations2016.sqlite3'); //connect
     $quotationNum = $_GET['i']; //number of quotations
     $adminURL = $_POST["adminURL"]; //admin URL
     function sendMail($to, $subject, $message){ //send email
-        
-        return TRUE; //will return true if sending worked
+        $mail = new PHPMailer;
+        $mail->isSMTP();
+        $mail->Host = 'localhost';
+        $mail->Port = 25;
+
+        //Set initial mail headers
+        $mail->From = "carillon@bcp.org";
+        $mail->FromName = "The Carillon";
+        $mail->AddBCC('carillon@bcp.org');
+        $mail->AddAddress($to);
+        $mail->Subject = $subject;
+        $mail->Body = $message;
+        $mail->IsHTML(true);
+                
+        return $mail->send(); //will return true if sending worked
     }
     for($num = 0; $num <= $quotationNum; $num++){ //for each quotation   
         $studentURL = $_POST["studentURL$num"]; //get the specific url for each quotation

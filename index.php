@@ -1,4 +1,5 @@
 <?php
+    require('PHPMailer/PHPMailerAutoload.php'); //PHPMailer file
     $url = $_GET['id']; //student's hash
     if($url != NULL){ //the url has the studnet's unique hash
         $db = new SQLite3('quotations2016.sqlite3'); //connect
@@ -29,8 +30,21 @@
 
         if(($firstName != "") and isset($firstName)){ //if the hash is found
             function sendMail($to, $subject, $message){ //send email
+                $mail = new PHPMailer;
+                $mail->isSMTP();
+                $mail->Host = 'localhost';
+                $mail->Port = 25;
+
+                //Set initial mail headers
+                $mail->From = "carillon@bcp.org";
+                $mail->FromName = "The Carillon";
+                $mail->AddBCC('carillon@bcp.org');
+                $mail->AddAddress($to);
+                $mail->Subject = $subject;
+                $mail->Body = $message;
+                $mail->IsHTML(true);
                 
-                return TRUE; //will return true if sending worked
+                return $mail->send(); //will return true if sending worked
             }
 ?>
 
