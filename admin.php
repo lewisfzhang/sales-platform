@@ -239,7 +239,7 @@
                             $radioName = "radioSet$i";
                             $radioId = "radioId$i"; 
             ?> 
-                <!--Show quotation in half of the browser-->
+                <!--Show quotation-->
                 <div class="w3-card" style="padding-top: 40px;">
                 <header class="w3-container w3-teal">
                     <h3><?php echo "$studentFirstName $studentLastName's"?> Quotation</h3>

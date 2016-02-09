@@ -22,9 +22,15 @@
         while($row = $result->fetchArray(SQLITE3_ASSOC)){
             $processedTeacer = $row['processedTeacher']; 
         }
+        //get student's email
+        while($row = $result->fetchArray(SQLITE3_ASSOC)){
+            $studentEmail = $row['email']; 
+        }
+
         if(($firstName != "") and isset($firstName)){ //if the hash is found
-            function sendMail($to, $from, $fromName, $subject, $message){
+            function sendMail($to, $subject, $message){ //send email
                 
+                return TRUE; //will return true if sending worked
             }
 ?>
 
@@ -87,6 +93,9 @@
                 trimmer();
             </script>
             <p id="charCount">Character Count: /100</p>
+            <script>
+                charCount(); 
+            </script>
             <p>Be sure to cite your source!</p>
             <input type="submit" name="submitQuote" class="w3-btn">
         </form>
@@ -104,10 +113,24 @@
                 $statement -> bindValue(':url', $url);
                 $statement -> bindValue(':newQuotation', $newQuotation);
                 $result = $statement->execute();
-                if($result){
-                    echo "<script>
-                    window.open('thankYou.html', '_self', false);
-                    </script>"; //open a new window to show that quotation has been submitted
+                if($result){ //if query worked
+                    $emailMessage = 
+                    "Hello $firstName, <br><br>
+                    Your senior quotation for this year's Carillon Yearbook has been received and is below! <br><br>
+                    Your quotation: $newQuotation <br><br>
+                    If something looks wrong, reply directly to this email. <br><br>
+                    Thanks again, <br><br>
+                    The Carillon Staff
+                    ";
+                    if(sendMail($studentEmail, "Carillon Senior Quotation Confirmation", $emailMessage)){ //if mail is sent successfully
+                        echo "<script>
+                        window.open('thankYou.html', '_self', false);
+                        </script>"; //open a new window to show that quotation has been submitted
+                        //echo "$studentEmail <br> $emailMessage";
+                    }
+                    else{ //if send fails
+                        echo "Oh no! Sending a confirmation email has failed! Plase check with <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> if your quotation has been received.";
+                    }
                 }
             }
             }
