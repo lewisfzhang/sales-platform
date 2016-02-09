@@ -23,6 +23,9 @@
             $processedTeacer = $row['processedTeacher']; 
         }
         if(($firstName != "") and isset($firstName)){ //if the hash is found
+            function sendMail($to, $from, $fromName, $subject, $message){
+                
+            }
 ?>
 
 <!DOCTYPE html>
