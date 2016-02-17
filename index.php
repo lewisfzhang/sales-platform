@@ -2,6 +2,7 @@
     error_reporting(E_ERROR | E_WARNING | E_PARSE); //doesn't report small errors
     require('PHPMailer/PHPMailerAutoload.php'); //PHPMailer file
     $url = $_GET['id']; //student's hash
+    $fullStudentURL = "http://times.bcp.org/yb/q2016/index.php?id=$url"; //the actual link to the student's quotation entry page
     if($url != NULL){ //if the url has the studnet's unique hash
         $db = new SQLite3('quotations2016.sqlite3'); //connect
         //get first name 
@@ -122,7 +123,7 @@
                 if($result){ //if query worked
                     $emailMessage = 
                     "Hello $firstName, <br><br>
-                    Your senior quotation for this year's Carillon Yearbook has been received and is below! <br><br>
+                    Your senior quotation for this year's Carillon Yearbook has been received and is pending approval! <br><br>
                     Your quotation: $newQuotation <br><br>
                     You may change your quotation here: <a href='$fullStudentURL'>$fullStudentURL</a> <br><br>
                     If something looks wrong, reply directly to this email. <br><br>
