@@ -21,7 +21,7 @@
                 
         return $mail->send(); //will return true if sending worked
     }
-    for($num = 0; $num <= $quotationNum; $num++){ //for each quotation 
+    for($num = 0; $num < $quotationNum; $num++){ //for each quotation 
         $studentURL = $_POST["studentURL$num"]; //get the specific hash for each quotation
         $fullStudentURL = "http://times.bcp.org/yb/q2016/index.php?id=$studentURL"; //the actual link to the student's quotation entry page
         $isStudentAdmin = $_POST["isStudentAdmin$num"]; //get whether it was a student admin 
