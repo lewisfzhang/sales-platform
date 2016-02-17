@@ -1,5 +1,5 @@
 <?php
-    error_reporting(E_ERROR | E_WARNING | E_PARSE);
+    error_reporting(E_ERROR | E_WARNING | E_PARSE); //doesn't report small errors
     require('PHPMailer/PHPMailerAutoload.php'); //PHPMailer file
     $db = new SQLite3('quotations2016.sqlite3'); //connect
     $quotationNum = $_GET['i']; //number of quotations
@@ -22,7 +22,8 @@
         return $mail->send(); //will return true if sending worked
     }
     for($num = 0; $num <= $quotationNum; $num++){ //for each quotation 
-        $studentURL = $_POST["studentURL$num"]; //get the specific url for each quotation
+        $studentURL = $_POST["studentURL$num"]; //get the specific hash for each quotation
+        $fullStudentURL = "http://times.bcp.org/yb/q2016/index.php?id=$studentURL"; //the actual link to the student's quotation entry page
         $isStudentAdmin = $_POST["isStudentAdmin$num"]; //get whether it was a student admin 
         $radioState = $_POST["radioSet$num"]; //whether the quotation was approved, disapproved, or cleared
         $disapprovalReason = $_POST["disapprovalReason$num"];
@@ -59,6 +60,7 @@
             $emailMessage = 
             "Hello $studentFirstName, <br><br>
             Unfortunately, your senior quotation for this year's Carillon Yearbook has been disapproved. You will need to resubmit your quotation as soon as possible. <br><br>
+            Please resubmit your quotation here: <a href='$fullStudentURL'>$fullStudentURL</a> <br><br>
             Your quotation: $quotation <br><br>
             The reason your quotation was disapproved: $disapprovalReason <br><br>
             If something looks wrong, reply directly to this email. <br><br>
@@ -79,7 +81,7 @@
         }
         $statement->execute(); //update table
 
-        $result2 = $statement2->execute(); //get student stuff agagin
+        $result2 = $statement2->execute(); //get student stuff again
         //get whether student has approved
         while($row = $result2->fetchArray(SQLITE3_ASSOC)){
             $processedStudent = $row['processedStudent']; 
@@ -101,20 +103,20 @@
 
         if(isset($emailMessage) and $emailMessage != ""){
             if(sendMail($studentEmail, "Carillon Senior Quotation Status", $emailMessage)){ //if mail is sent successfully
-                //echo "$studentEmail <br> $emailMessage";
+                //do nothing
             }
             else{ //if send fails
                 echo "Oh no! Sending a disapproval email has failed! Plase contact <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> so we can fix the problem.";
             }
         }
     }
+
     //log out
     if (isset($adminURL) and ($adminURL != "")) {
         $statement = $db -> prepare('UPDATE admin SET isLoggedIn = 0 WHERE url = :adminURL'); 
         $statement -> bindValue(':adminURL', $adminURL);
         $result = $statement->execute();
-        echo "<br> Thank you! You're now logged out!";
-        //echo "$studentEmail <br> $emailMessage";   
+        echo "<br> Thank you! You're now logged out!";  
 ?>
 
 <!DOCTYPE html>
