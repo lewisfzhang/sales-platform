@@ -1,4 +1,5 @@
 <?php
+    error_reporting(E_ERROR | E_WARNING | E_PARSE);
     require('PHPMailer/PHPMailerAutoload.php'); //PHPMailer file
     $db = new SQLite3('quotations2016.sqlite3'); //connect
     $quotationNum = $_GET['i']; //number of quotations
@@ -20,7 +21,7 @@
                 
         return $mail->send(); //will return true if sending worked
     }
-    for($num = 0; $num <= $quotationNum; $num++){ //for each quotation   
+    for($num = 0; $num <= $quotationNum; $num++){ //for each quotation 
         $studentURL = $_POST["studentURL$num"]; //get the specific url for each quotation
         $isStudentAdmin = $_POST["isStudentAdmin$num"]; //get whether it was a student admin 
         $radioState = $_POST["radioSet$num"]; //whether the quotation was approved, disapproved, or cleared
@@ -85,9 +86,9 @@
         }
         //get whether teacher has approved
         while($row = $result2->fetchArray(SQLITE3_ASSOC)){
-            $processedTeacer = $row['processedTeacher']; 
+            $processedTeacher = $row['processedTeacher']; 
         }
-        if(($processedStudent == 1) and ($processedTeacer == 1)){ //if student quotation has been approved by student and teacher admins
+        if(($processedStudent == 1) and ($processedTeacher == 1)){ //if student quotation has been approved by student and teacher admins
             $emailMessage = 
             "Hello $studentFirstName, <br><br>
             Congratulations, your senior quotation for this year's Carillon Yearbook has been approved! You'll see it in the yearbook! <br><br>

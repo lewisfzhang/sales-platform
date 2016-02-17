@@ -1,4 +1,5 @@
 <?php
+    error_reporting(E_ERROR | E_WARNING | E_PARSE);
     require('PHPMailer/PHPMailerAutoload.php'); //PHPMailer file
     $url = $_GET['id']; //student's hash
     if($url != NULL){ //the url has the studnet's unique hash
@@ -114,8 +115,8 @@
             <input type="submit" name="submitQuote" class="w3-btn">
         </form>
         <?php
-            $newQuotation = $_POST['quotationEntry']; //get new quotation
             if(isset($_POST['quotationEntry'])){ //if the user entered a quotation
+                $newQuotation = $_POST['quotationEntry']; //get new quotation
                 //set quotation and reset approvals
                 $statement = $db -> prepare(
                 'UPDATE quotations

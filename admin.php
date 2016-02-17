@@ -1,4 +1,5 @@
 <?php
+    error_reporting(E_ERROR | E_WARNING | E_PARSE);
     $url = $_GET['id'];
     if(($url != NULL) and ($url != "")){ //the url has the admin's unique hash
         $db = new SQLite3('quotations2016.sqlite3'); //connect
@@ -105,10 +106,10 @@
             </div>
         </div>
         <?php
-            $email = $_POST['email']; //get email
             /*$password = $_POST['password']; //get password entered
             $hashPass = sha1($password); //hash of the password*/
-            if(isset($_POST['email']) and $email != "" /*and isset($_POST['password'])*/){ //if admin entered email
+            if(isset($_POST['email']) and $_POST['email'] != "" /*and isset($_POST['password'])*/){ //if admin entered email
+                $email = $_POST['email']; //get email
                 //get the true email from the database
                 while($row = $result->fetchArray(SQLITE3_ASSOC)){
                     $dbEmail = $row['email']; 
@@ -280,7 +281,7 @@
                                 <label for="<?php echo "clear$radioId"?>">Clear</label>
                             </li>
                         </ul>
-                        <textarea name=<?echo "\"disapprovalReason$i\""?> placeholder="Disapproval Reason" rows="1" cols="40"></textarea>
+                        <textarea name=<?php echo "\"disapprovalReason$i\""?> placeholder="Disapproval Reason" rows="1" cols="40"></textarea>
                         <input type="hidden" name=<?php echo "\"studentURL$i\""?> value=<?php echo "\"$studentURL\"";?>> <!--Sends the URL of the student whose quotation is being looked at-->
                         <input type="hidden" name=<?php echo "\"isStudentAdmin$i\""?> value=<?php echo "\"$isStudentAdmin\""?>> <!--Send whether or not it's a student admin-->
                     </div>
