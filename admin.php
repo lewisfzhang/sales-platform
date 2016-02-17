@@ -266,10 +266,6 @@
                     </div>
                 </div>
                 </div>
-
-                <!--Show name of student-->
-                <?php echo "$studentFirstName $studentLastName";?>
-
             <?php
                         //close curly braces
                         }
