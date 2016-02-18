@@ -125,7 +125,6 @@
                     "Hello $firstName, <br><br>
                     Your senior quotation for this year's Carillon Yearbook has been received and is pending approval! <br><br>
                     Your quotation: $newQuotation <br><br>
-                    You may change your quotation here: <a href='$fullStudentURL'>$fullStudentURL</a> <br><br>
                     If something looks wrong, reply directly to this email. <br><br>
                     Thanks again, <br><br>
                     The Carillon Staff

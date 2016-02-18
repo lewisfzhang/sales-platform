@@ -21,7 +21,7 @@
                 
         return $mail->send(); //will return true if sending worked
     }
-    for($num = 0; $num < $quotationNum; $num++){ //for each quotation 
+    for($num = 0; $num <= $quotationNum; $num++){ //for each quotation 
         $studentURL = $_POST["studentURL$num"]; //get the specific hash for each quotation
         $fullStudentURL = "http://times.bcp.org/yb/q2016/index.php?id=$studentURL"; //the actual link to the student's quotation entry page
         $isStudentAdmin = $_POST["isStudentAdmin$num"]; //get whether it was a student admin 
@@ -67,6 +67,12 @@
             Thanks again, <br><br>
             The Carillon Staff
             ";
+            if(sendMail($studentEmail, "Carillon Senior Quotation Status", $emailMessage)){ //if mail is sent successfully
+                echo "Mail sent to $studentEmail";
+            }
+            else{ //if send fails
+                echo "Oh no! Sending a disapproval email has failed! Plase contact <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> so we can fix the problem.";
+            }
         }
         else{
             //set the approval state of the quotation
@@ -99,11 +105,8 @@
             Thanks again, <br><br>
             The Carillon Staff
             ";
-        }
-
-        if(isset($emailMessage) and $emailMessage != ""){
             if(sendMail($studentEmail, "Carillon Senior Quotation Status", $emailMessage)){ //if mail is sent successfully
-                //do nothing
+                echo "Mail sent to $studentEmail";
             }
             else{ //if send fails
                 echo "Oh no! Sending a disapproval email has failed! Plase contact <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> so we can fix the problem.";

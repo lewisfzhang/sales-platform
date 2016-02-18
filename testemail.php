@@ -23,7 +23,7 @@
 	        $mail->From = "carillon@bcp.org";
 	        $mail->FromName = "The Carillon";
 	        $mail->AddAddress('carillon@bcp.org');
-            $mail->AddAddress('kevin.gottlieb19@bcp.org');
+            $mail->AddAddress('chanan.walia16@bcp.org');
 	        $mail->Subject = $subject;
 	        $mail->Body = $body;
 	        $mail->IsHTML(true);
