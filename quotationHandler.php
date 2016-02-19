@@ -4,6 +4,9 @@
     $db = new SQLite3('quotations2016.sqlite3'); //connect
     $quotationNum = $_GET['i']; //number of quotations
     $adminURL = $_POST["adminURL"]; //admin URL
+    $mailSent = FALSE; //whether the email has been sent
+    $pastStudentURL = " "; //the hash of the quotation acted upon in the previous interaiont of the for loop
+
     function sendMail($to, $subject, $message){ //send email
         $mail = new PHPMailer;
         $mail->isSMTP();
@@ -21,12 +24,18 @@
                 
         return $mail->send(); //will return true if sending worked
     }
+
     for($num = 0; $num <= $quotationNum; $num++){ //for each quotation 
         $studentURL = $_POST["studentURL$num"]; //get the specific hash for each quotation
         $fullStudentURL = "http://times.bcp.org/yb/q2016/index.php?id=$studentURL"; //the actual link to the student's quotation entry page
         $isStudentAdmin = $_POST["isStudentAdmin$num"]; //get whether it was a student admin 
         $radioState = $_POST["radioSet$num"]; //whether the quotation was approved, disapproved, or cleared
         $disapprovalReason = $_POST["disapprovalReason$num"];
+
+        if($studentURL != $pastStudentURL){ //if the current url is different 
+            $mailSent = FALSE; 
+        }
+
         //get student stuff
         $statement2 = $db -> prepare('SELECT * FROM quotations WHERE url = :studentURL;'); 
         $statement2 -> bindValue(':studentURL', $studentURL);
@@ -68,11 +77,14 @@
             Thanks again, <br><br>
             The Carillon Staff
             ";
-            if(sendMail($studentEmail, "Carillon Senior Quotation Status", $emailMessage)){ //if mail is sent successfully
-                echo "Mail sent to $studentEmail <br>";
-            }
-            else{ //if send fails
-                echo "Oh no! Sending a disapproval email has failed! Plase contact <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> so we can fix the problem.";
+            if(!$mailSent){ //if mail hasn't been sent
+                if(sendMail($studentEmail, "Carillon Senior Quotation Status", $emailMessage)){ //if mail is sent successfully
+                    echo "Mail sent to $studentEmail <br>";
+                    $mailSent = TRUE;
+                }
+                else{ //if send fails
+                    echo "Oh no! Sending a disapproval email has failed! Plase contact <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> so we can fix the problem.";
+                }
             }
         }
         else{
@@ -87,33 +99,40 @@
             $statement -> bindValue(':studentURL', $studentURL);
             $statement->execute(); //update table
 
-            $result2 = $statement2->execute(); //get student stuff again
-            //get whether student has approved
-            while($row = $result2->fetchArray(SQLITE3_ASSOC)){
-                $processedStudent = $row['processedStudent']; 
-            }
-            //get whether teacher has approved
-            while($row = $result2->fetchArray(SQLITE3_ASSOC)){
-                $processedTeacher = $row['processedTeacher']; 
-            }
-
-            if(($processedStudent == 1) and ($processedTeacher == 1)){ //if student quotation has been approved by student and teacher admins
-                $emailMessage = 
-                "Hello $studentFirstName, <br><br>
-                Congratulations, your senior quotation for this year's Carillon Yearbook has been approved! You'll see it in the yearbook! <br><br>
-                Your quotation: $quotation <br><br>
-                If something looks wrong, reply directly to this email. <br><br>
-                Thanks again, <br><br>
-                The Carillon Staff
-                ";
-                if(sendMail($studentEmail, "Carillon Senior Quotation Status", $emailMessage)){ //if mail is sent successfully
-                    echo "Mail sent to $studentEmail <br>";
+            if($radioState == 1){
+                $result2 = $statement2->execute(); //get student stuff again
+                //get whether student has approved
+                while($row = $result2->fetchArray(SQLITE3_ASSOC)){
+                    $processedStudent = $row['processedStudent']; 
                 }
-                else{ //if send fails
-                    echo "Oh no! Sending a disapproval email has failed! Plase contact <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> so we can fix the problem.";
+                //get whether teacher has approved
+                while($row = $result2->fetchArray(SQLITE3_ASSOC)){
+                    $processedTeacher = $row['processedTeacher']; 
+                }
+
+                if(($processedStudent == 1) and ($processedTeacher == 1)){ //if student quotation has been approved by student and teacher admins
+                    $emailMessage = 
+                    "Hello $studentFirstName, <br><br>
+                    Congratulations, your senior quotation for this year's Carillon Yearbook has been approved! You'll see it in the yearbook! <br><br>
+                    Your quotation: $quotation <br><br>
+                    If something looks wrong, reply directly to this email. <br><br>
+                    Thanks again, <br><br>
+                    The Carillon Staff
+                    ";
+                    if(!$mailSent){
+                        if(sendMail($studentEmail, "Carillon Senior Quotation Status", $emailMessage)){ //if mail is sent successfully
+                            echo "Mail sent to $studentEmail <br>";
+                            $mailSent = TRUE;
+                        }
+                        else{ //if send fails
+                            echo "Oh no! Sending a disapproval email has failed! Plase contact <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> so we can fix the problem.";
+                        }
+                    }
                 }
             }
         }
+
+        $pastStudentURL = $studentURL; //set the current url as the past url for the next loop
     }
 
     //log out
