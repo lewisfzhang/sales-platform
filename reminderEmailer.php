@@ -72,13 +72,26 @@
                     $url = $urlArray[$index];
                     $processedStudent = $processedStudentArray[$index];
                     $processedTeacher = $processedTeacherArray[$index];
+                    $fullURL = "http://times.bcp.org/yb/q2016/index.php?id=$url";
 
                     //send an email if student hasn't entered quotation yet
-                    if(!isset($quotation) or $quotation == NULL or $quotation == "" or $processedStudent == -1 or $processedTeacher == -1){
-                        
-                    } 
+                    if(!isset($quotation) or $quotation == NULL or empty($quotation) or $quotation == "" or $processedStudent == -1 or $processedTeacher == -1){
+                        $emailMessage = 
+                        "Hello $firstName, <br><br>
+                        It seems you haven't submitted your senior quotation yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> <br><br>
+                        If something looks wrong, reply directly to this email. <br><br>
+                        Thanks again, <br><br>
+                        The Carillon Staff";
+ 
+                        if(sendMail($email, "Please Submit Your Carillon Senior Quotation", $emailMessage)){ //if mail is sent successfully
+                            echo "Mail sent to $email <br>";
+                        }
+                        else{ //if send fails
+                            echo "Oh no! Sending a disapproval email has failed! Plase contact <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> so we can fix the problem.";
+                        }
 
                     $index = $index + 1; //increment index
+                    }
                 }
             }
         ?>
