@@ -78,7 +78,7 @@
                     if(!isset($quotation) or $quotation == NULL or empty($quotation) or $quotation == "" or $processedStudent == -1 or $processedTeacher == -1){
                         $emailMessage = 
                         "Hello $firstName, <br><br>
-                        It seems you haven't submitted your senior quotation yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> <br><br>
+                        It seems you haven't submitted (or resubmitted after disapproval) your senior quotation yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> by 11:59pm Wednesday the 9th.<br><br>
                         If something looks wrong, reply directly to this email. <br><br>
                         Thanks again, <br><br>
                         The Carillon Staff";
@@ -87,11 +87,10 @@
                             echo "Mail sent to $email <br>";
                         }
                         else{ //if send fails
-                            echo "Oh no! Sending a disapproval email has failed! Plase contact <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> so we can fix the problem.";
+                            echo "Oh no! Sending a reminder email has failed! Plase contact <a href='mailto:carillon@bcp.org'>carillon@bcp.org</a> so we can fix the problem.";
                         }
-
-                    $index = $index + 1; //increment index
                     }
+                    $index++; //increment index
                 }
             }
         ?>
