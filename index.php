@@ -36,6 +36,7 @@
                 $mail->isSMTP();
                 $mail->Host = 'localhost';
                 $mail->Port = 25;
+                $mail->CharSet = 'UTF-8';
 
                 //Set initial mail headers
                 $mail->From = "carillon@bcp.org";
