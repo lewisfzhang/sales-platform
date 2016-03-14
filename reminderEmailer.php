@@ -79,7 +79,7 @@
                     if(!isset($quotation) or $quotation == NULL or empty($quotation) or $quotation == "" or $processedStudent == -1 or $processedTeacher == -1){
                         $emailMessage = 
                         "Hello $firstName, <br><br>
-                        It seems you haven't submitted (or resubmitted after disapproval) your senior quotation yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> by 11:59pm Wednesday the 9th.<br><br>
+                        It seems you haven't submitted (or resubmitted after disapproval) your senior quotation yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> by 11:59pm Wednesday the 16th.<br><br>
                         If something looks wrong, reply directly to this email. <br><br>
                         Thanks again, <br><br>
                         The Carillon Staff";
