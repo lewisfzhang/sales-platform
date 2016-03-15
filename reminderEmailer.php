@@ -1,5 +1,5 @@
 <?php
-    error_reporting(E_ERROR | E_WARNING | E_PARSE); //doesn't report small errors
+    error_reporting(E_ERROR | E_PARSE); //doesn't report small errors
     require('PHPMailer/PHPMailerAutoload.php'); //PHPMailer file
     $db = new SQLite3('quotations2016.sqlite3'); //connect
 

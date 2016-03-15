@@ -23,9 +23,6 @@
             function loginAdmin() {
                 document.getElementById("container").innerHTML = ""; //delete login form
             }
-            function logOutAsk() {
-                return "Don't close this tab or refresh without pressing log out. If you're logging in/out or pressing \"Submit\", hit \"Leave this Page\" to continue.";
-            }
         </script>
         <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css"> <!--W3.CSS stylesheet-->
         <style>
@@ -77,7 +74,7 @@
             }
         </style>
     </head>
-    <body onbeforeunload="return logOutAsk()"> <!--Before user closes tab or moves pages, ask if they are sure-->
+    <body>
         <div id="container">
             <!--W3.CSS Login page example template-->
             <header class="w3-container w3-blue">
