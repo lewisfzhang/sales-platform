@@ -46,6 +46,7 @@
                 $quotationArray[] = [];
                 $processedStudentArray[] = [];
                 $processedTeacherArray[] =[];
+                $disapprovalReasonArray[] = [];
 
                 while($row = $result->fetchArray(SQLITE3_ASSOC)){
                     array_push($emailArray, $row['email']); //set the values in to the array
@@ -65,6 +66,9 @@
                 while($row = $result->fetchArray(SQLITE3_ASSOC)){
                     array_push($processedTeacherArray, $row['processedTeacher']); //set the values in to the array
                 }
+                while($row = $result->fetchArray(SQLITE3_ASSOC)){
+                    array_push($disapprovalReasonArray, $row['disapprovalReason']); //set the values in to the array
+                }
 
                 $index = 0; //the current index the emailer is on
                 foreach($emailArray as $email){
@@ -73,16 +77,31 @@
                     $url = $urlArray[$index];
                     $processedStudent = $processedStudentArray[$index];
                     $processedTeacher = $processedTeacherArray[$index];
+                    $disapprovalReason = $disapprovalReasonArray[$index];
                     $fullURL = "http://times.bcp.org/yb/q2016/index.php?id=$url";
 
                     //send an email if student hasn't entered quotation yet
                     if(!isset($quotation) or $quotation == NULL or empty($quotation) or $quotation == "" or $processedStudent == -1 or $processedTeacher == -1){
-                        $emailMessage = 
-                        "Hello $firstName, <br><br>
-                        It seems you haven't submitted (or resubmitted after disapproval) your senior quotation yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> by 11:59pm Monday the 4th.<br><br>
-                        If something looks wrong, reply directly to this email. <br><br>
-                        Thanks again, <br><br>
-                        The Carillon Staff";
+                        if(!isset($quotation) or $quotation == NULL or empty($quotation) or $quotation == ""){
+                            $emailMessage = 
+                            "Hello $firstName, <br><br>
+                            It seems you haven't submitted your senior quotation yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> by Monday the 23rd by 11:59pm.<br><br>
+                            We're getting very close to the deadline for printing the book, and need you to make sure the quotation you submit is the one you really want printed. Please keep it appropriate and cite the author of the quotation. If it is original, please write “- Me” at the end of the quotation. We obviously won’t print that but it will indicate to us that it needs no citation. <br><br>
+                            If something looks wrong, reply directly to this email. <br><br>
+                            Thanks again, <br><br>
+                            The Carillon Staff";
+                        }
+                        if($processedStudent == -1 or $processedTeacher == -1){
+                            $emailMessage = 
+                            "Hello $firstName, <br><br>
+                            It seems you haven't resubmitted your senior quotation after disapproval yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> by Monday the 23rd by 11:59pm.<br><br>
+                            Your current quotation: $quotation <br><br>
+                            The reason your quotation was disapproved: $disapprovalReason <br><br>
+                            We're getting very close to the deadline for printing the book, and need you to make sure the quotation you resubmit is the one you really want printed. Please keep it appropriate and cite the author of the quotation. If it is original, please resubmit and write “- Me” at the end of the quotation. We obviously won’t print that but it will indicate to us that it needs no citation. <br><br>
+                            If something looks wrong, reply directly to this email. <br><br>
+                            Thanks again, <br><br>
+                            The Carillon Staff";
+                        }
  
                         if(sendMail($email, "Please Submit Your Carillon Senior Quotation", $emailMessage)){ //if mail is sent successfully
                             echo "Mail sent to $email <br>";
