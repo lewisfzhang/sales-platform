@@ -85,7 +85,7 @@
                         if(!isset($quotation) or $quotation == NULL or empty($quotation) or $quotation == ""){
                             $emailMessage = 
                             "Hello $firstName, <br><br>
-                            It seems you haven't submitted your senior quotation yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> by Monday the 23rd by 11:59pm.<br><br>
+                            It seems you haven't submitted your senior quotation yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> as soon as possible.<br><br>
                             We're getting very close to the deadline for printing the book, and need you to make sure the quotation you submit is the one you really want printed. Please keep it appropriate and cite the author of the quotation. If it is original, please write “- Me” at the end of the quotation. We obviously won’t print that but it will indicate to us that it needs no citation. <br><br>
                             If something looks wrong, reply directly to this email. <br><br>
                             Thanks again, <br><br>
@@ -94,7 +94,7 @@
                         if($processedStudent == -1 or $processedTeacher == -1){
                             $emailMessage = 
                             "Hello $firstName, <br><br>
-                            It seems you haven't resubmitted your senior quotation after disapproval yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> by Monday the 23rd by 11:59pm.<br><br>
+                            It seems you haven't resubmitted your senior quotation after disapproval yet! Please submit your quotation here: <a href='$fullURL'>$fullURL</a> as soon as possible.<br><br>
                             Your current quotation: $quotation <br><br>
                             The reason your quotation was disapproved: $disapprovalReason <br><br>
                             We're getting very close to the deadline for printing the book, and need you to make sure the quotation you resubmit is the one you really want printed. Please keep it appropriate and cite the author of the quotation. If it is original, please resubmit and write “- Me” at the end of the quotation. We obviously won’t print that but it will indicate to us that it needs no citation. <br><br>
